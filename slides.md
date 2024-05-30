@@ -274,7 +274,10 @@ hideInToc: true
 
 Aby móc korzystać z więcej niż 1 formularza i domyślnej akcji `default`, należy dodać je w następujący sposób:
 
+<div class="grid grid-cols-2 gap-2 [&>*]:grid">
+
 ```svelte
+<!-- +page.svelte -->
 <form method="post" action="?/dodaj">
     <input type="text" name="zadanie">
     <button type="submit">Dodaj</button>
@@ -287,6 +290,7 @@ Aby móc korzystać z więcej niż 1 formularza i domyślnej akcji `default`, na
 ```
 
 ```javascript
+// +page.server.ts
 export const actions = {
 	dodaj: async ({ cookies, request }) => {
 		const data = await request.formData();
@@ -301,6 +305,8 @@ export const actions = {
 	}
 };
 ```
+</div>
+
 ---
 
 # Svelte stores
@@ -410,6 +416,10 @@ Aby dodać customową stronę błędu, możemy utworzyć plik `+error.svelte`
 ```svelte
 <h1>{$page.status} {$page.error.message}</h1>
 ```
+
+<!--
+n
+-->
 
 ---
 transition: fade
