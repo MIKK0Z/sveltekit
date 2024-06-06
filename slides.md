@@ -313,6 +313,8 @@ export const actions = {
 
 Aby uzyskiwać dostęp do danych między przekierowaniami i zarządzać danymi aplikacji, używa się `svelte/store`. Aby ustawić wartość używamy funkcji `set` a żeby ją zmienić, funkcji `update`, w której możemy pobrać obecną zawartość i zwrócić nową. Aby modyfikować wartość bezpośredniu z inputa, trzeba dodać `$` przed nazwą. Przykład:
 
+<div class="grid grid-cols-2 gap-2 [&>*]:grid">
+
 ```javascript
 //plik src/lib/stores.js
 import { writable } from 'svelte/store';
@@ -342,6 +344,8 @@ function reset() {
 <input type="number" bind:value={$count}>
 ```
 
+</div>
+
 ---
 transition: fade
 ---
@@ -349,6 +353,8 @@ transition: fade
 # Customowe funkcje
 
 `Stores` mogą exportwać własne funkcje, na przykład:
+
+<div class="grid grid-cols-2 gap-2 [&>*]:grid">
 
 ```javascript
 import { writable } from 'svelte/store';
@@ -380,6 +386,8 @@ export const count = createCount();
 <button on:click={count.reset}>reset</button>
 
 ```
+
+</div>
 
 ---
 transition: fade
@@ -470,5 +478,194 @@ export function POST({ request, cookies }) {
 
 	return json(number);
 }
+```
 
+---
+transition: fade
+---
+
+# ssr
+Domyślnie strony w svelcie wykorzystują server-side rendering (ssr), generuje on kod HTML na serwerze i wysyła go do klienta. Poprawia to szybkość ładowania strony oraz SEO.
+
+Dużym minusem ssr jest to że nie da się używać zmiennych globalnych przeglądarki (np. `window`)
+
+Aby wyłączyć ssr należy użyć następującą linijke w pliku `+page.server.js`
+
+```js
+export const ssr = false;
+```
+
+---
+transition: fade
+---
+
+# Preloading
+Są dwa sposoby na preloadowanie strony w sveltekit, pierwszy z nich ładuje strone przy uruchomieniu serwera, a drugi na hoverze linka do tej podstrony
+
+<div class="grid grid-cols-2 gap-2 [&>*]:grid">
+
+```js
+// +page.server.js
+export const prerender = true;
+```
+
+```svelte
+<!-- ../+page.svelte -->
+<nav>
+	<a href="/page" data-sveltekit-preload-data>link</a>
+</nav>
+```
+
+</div>
+
+
+---
+transition: fade
+---
+
+# Zmienne środowiskowe
+Domyślnie wszystkie zmienne środowiskowe w sveltekit są prywatne (są dostępne tylko w plikach serwerowych, np `+page.server.js`)
+
+<div class="grid grid-cols-2 gap-2 [&>*]:grid">
+
+```
+APP_NAME="App name"
+```
+
+```js
+// +page.server.js
+
+import { APP_NAME } from '$env/static/private';
+
+console.log(APP_NAME)
+```
+
+</div>
+
+Aby móc używać zmiennej po stronie klienta należy przed jej nazwą napisać `PUBLIC_`
+
+<div class="grid grid-cols-2 gap-2 [&>*]:grid">
+
+```
+PUBLIC_APP_NAME="App name"
+```
+
+```svelte
+<!-- +page.svelte -->
+
+<script>
+	import { PUBLIC_APP_NAME } from '$env/static/public';
+</script>
+
+<h1>{PUBLIC_APP_NAME}</h1>
+```
+
+</div>
+
+---
+transition: fade
+---
+
+# Slidev
+Ta prezentacja została zrobiona przy użyciu slidev. Jest to aplikacja do tworzenia prezaentacji oparta na node js. Nadaje się najbardziej do tworzenia prezentacji związanych z programowaniem.
+
+```bash
+npm init slidev@latest
+```
+
+---
+transition: fade
+---
+
+# Slajdy
+Slidy są tworzone w postaci plików markdown `.md`. Można łatwo dodawać bloki pokazujące kod, motywy oraz dodawać komponenty `Vue`.
+
+```md
+---
+transition: fade
+---
+
+# Slajdy
+Slidy są tworzone w postaci plików markdown `.md`. Można łatwo dodawać bloki pokazujące kod,
+motywy oraz dodawać komponenty `Vue`.
+
+```
+
+---
+transition: fade
+---
+
+# Spis treści
+Można łatwo wygenerować spis treści dla prezentacji dodając:
+
+```jsx
+<Toc maxDepth="1" columns="3"></Toc>
+
+```
+<Toc columns="3" />
+
+---
+transition: fade
+---
+
+# Podświetlenia
+Aby podświetlać linijki kodu w trakcie prezentacji, należy dodać odpowienie linie w nawiasach klamrowych, np `js {2,3}`.
+
+```js {2,3}
+function add (
+	a: Ref<number> | number,
+	b: Ref<number> | number
+) {
+	return computed(() => unref(a) + unref(b))
+}
+```
+
+---
+transition: fade
+---
+
+
+# Shiki Magic Move (animacje przy zmianie kodu)
+````md magic-move
+```js
+console.log(`Step ${1}`)
+```
+
+```js
+console.log(`Step ${1 + 1}`)
+```
+
+```ts
+console.log(`Step ${3}` as string)
+```
+````
+
+```md
+''''md magic-move
+'''js
+console.log(`Step ${1}`)
+'''
+
+'''js
+console.log(`Step ${1 + 1}`)
+'''
+
+'''ts
+console.log(`Step ${3}` as string)
+'''
+''''
+```
+
+---
+transition: fade
+---
+
+# Podkreślenia i animacje
+
+<div v-click>To pokaże się po kliknieciu.</div>
+<span v-mark.underline.orange>podkreślenia</span>
+
+```html
+<div v-click>To pokaże się po kliknieciu.</div>
+<span v-mark.underline.orange>podkreślenia</span>
 ```
